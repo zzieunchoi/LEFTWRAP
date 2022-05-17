@@ -119,3 +119,56 @@
 2. AUTHORIZATION 허가를 받은 VENDOR만 들어올 수 있게끔!
 ```
 
+
+
+____
+
+# 프로젝트 일지
+
+
+
+## DAY1
+
+* 한 일
+  * 모델 구상하기
+  * SERIALIZER 구상하기
+* 어려웠던 점
+  * 모델이 하도 많아서 어떻게 구상해야할지 감이 안잡힘 ㅜ 
+  * accounts가 customer도 있고 vendor도 있는데 한개로 합친 user로 사용할지 따로따로 테이블을 만들지 고민 ㅠㅠ 
+  * serializers 배운지 하도 오래되서 시작을 못함 ㅠㅠ
+
+___
+
+## DAY2
+
+* 한 일
+
+  * 어제 구상한 모델 직접 코드 작성하고 손 보기
+  * HTML 어떻게 만들지 한번 그려보기
+  * URLS 주소 이름 부여하기
+  * accounts에 구분키를 넣어서 0인 경우 customer, 1인 경우 vendor로 작성함
+
+* 배운점
+
+  * 계속 not null contraints failed가 뜨길래 뭐지,, 했는데 default = False를 넣어줘야 문제가 생기지 않음!
+
+    => 아무것도 없는 상태로 들어가면 빈 값이 되므로 테이블이 작성되기 어려움
+
+```python
+# accounts/models.py
+
+class User(AbstractUser):
+    # 구분자 넣기
+    division = models.BooleanField(default = False)
+```
+
+
+
+![image-20220517175345984](README.assets/image-20220517175345984.png)
+
+![image-20220517175352519](README.assets/image-20220517175352519.png)
+
+___
+
+## DAY3
+
