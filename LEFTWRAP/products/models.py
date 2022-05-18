@@ -13,6 +13,7 @@ class Product(models.Model):
     name = models.CharField(max_length=50)
     price = models.IntegerField()
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to = 'images/', null=True, blank=True)
 
     def __str__(self):
         return self.name

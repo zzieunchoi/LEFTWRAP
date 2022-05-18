@@ -1,4 +1,17 @@
 {% extends 'base.html' %}
 
 {% block content %}
-{% endblock content %}
+<h1 class="text-center">{{user.name}}님 상점의 마감 임박 상품추가</h1>
+<form action="{% url 'products:sale_create' %}" method="POST" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ form.as_p }}
+  
+  <!--파일 업로드 되는지 확인-->
+  업로드 : 
+  <input name="image" type="file">
+  <br><br>
+  <input class = 'btn btn-primary'type="submit" value = "추가">
+</form>
+<hr>
+<a class = 'btn btn-info' href="{% url 'products:sale_index' %}">돌아가기</a>
+{% endblock content %} 

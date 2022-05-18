@@ -9,73 +9,73 @@ from django.views.decorators.http import require_POST, require_http_methods
 from .forms import CustomUserCreationForm
 
 
-# @require_http_methods(['GET', 'POST'])
-# def signup(request):
-#     if request.user.is_authenticated:
-#         return redirect('community:index')
+@require_http_methods(['GET', 'POST'])
+def signup(request):
+    if request.user.is_authenticated:
+        return redirect('products:home')
 
-#     if request.method == 'POST':
-#         form = CustomUserCreationForm(request.POST)
-#         if form.is_valid():
-#             user = form.save()
-#             auth_login(request, user)
-#             return redirect('community:index')
-#     else:
-#         form = CustomUserCreationForm()
-#     context = {
-#         'form': form,
-#     }
-#     return render(request, 'accounts/signup.html', context)
-
-
-# @require_http_methods(['GET', 'POST'])
-# def login(request):
-#     if request.user.is_authenticated:
-#         return redirect('community:index')
-
-#     if request.method == 'POST':
-#         form = AuthenticationForm(request, request.POST)
-#         if form.is_valid():
-#             auth_login(request, form.get_user())
-#             return redirect(request.GET.get('next') or 'community:index')
-#     else:
-#         form = AuthenticationForm()
-#     context = {
-#         'form': form,
-#     }
-#     return render(request, 'accounts/login.html', context)
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            auth_login(request, user)
+            return redirect('products:home')
+    else:
+        form = CustomUserCreationForm()
+    context = {
+        'form': form,
+    }
+    return render(request, 'accounts/signup.html', context)
 
 
-# @require_POST
-# def logout(request):
-#     auth_logout(request)
-#     return redirect('community:index')
+@require_http_methods(['GET', 'POST'])
+def login(request):
+    if request.user.is_authenticated:
+        return redirect('products:home')
+
+    if request.method == 'POST':
+        form = AuthenticationForm(request, request.POST)
+        if form.is_valid():
+            auth_login(request, form.get_user())
+            return redirect(request.GET.get('next') or 'products:home')
+    else:
+        form = AuthenticationForm()
+    context = {
+        'form': form,
+    }
+    return render(request, 'accounts/login.html', context)
 
 
-# @login_required
-# def profile(request, username):
-#     person = get_object_or_404(get_user_model(), username=username)
-#     context = {
-#         'person': person,
-#     }
-#     return render(request, 'accounts/profile.html', context)
+@require_POST
+def logout(request):
+    auth_logout(request)
+    return redirect('products:home')
 
 
-# @require_POST
-# def follow(request, user_pk):
-#     if request.user.is_authenticated:
-#         person = get_object_or_404(get_user_model(), pk=user_pk)
-#         user = request.user
-#         if person != user:
-#             if person.followers.filter(pk=user.pk).exists():
-#                 person.followers.remove(user)
-#                 follow = False
-#             else:
-#                 person.followers.add(user)
-#                 follow = True
-#             context = {
-#                 'follow':follow,
-#                 'followers_count' : len(person.followers.all()),
-#                 'followings_count' : len(person.followings.all()),
-#                 }
-#         return JsonResponse(context)
+@login_required
+def profile(request, username):
+    person = get_object_or_404(get_user_model(), username=username)
+    context = {
+        'person': person,
+    }
+    return render(request, 'accounts/profile.html', context)
+
+
+@require_POST
+def follow(request, user_pk):
+    if request.user.is_authenticated:
+        person = get_object_or_404(get_user_model(), pk=user_pk)
+        user = request.user
+        if person != user:
+            if person.followers.filter(pk=user.pk).exists():
+                person.followers.remove(user)
+                follow = False
+            else:
+                person.followers.add(user)
+                follow = True
+            context = {
+                'follow':follow,
+                'followers_count' : len(person.followers.all()),
+                'followings_count' : len(person.followings.all()),
+                }
+        return JsonResponse(context)

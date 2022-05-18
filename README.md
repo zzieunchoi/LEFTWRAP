@@ -121,36 +121,32 @@
 
 
 
-____
-
 # 프로젝트 일지
-
-
 
 ## DAY1
 
-* 한 일
-  * 모델 구상하기
-  * SERIALIZER 구상하기
-* 어려웠던 점
-  * 모델이 하도 많아서 어떻게 구상해야할지 감이 안잡힘 ㅜ 
-  * accounts가 customer도 있고 vendor도 있는데 한개로 합친 user로 사용할지 따로따로 테이블을 만들지 고민 ㅠㅠ 
-  * serializers 배운지 하도 오래되서 시작을 못함 ㅠㅠ
+- 한 일
+  - 모델 구상하기
+  - SERIALIZER 구상하기
+- 어려웠던 점
+  - 모델이 하도 많아서 어떻게 구상해야할지 감이 안잡힘 ㅜ
+  - accounts가 customer도 있고 vendor도 있는데 한개로 합친 user로 사용할지 따로따로 테이블을 만들지 고민 ㅠㅠ
+  - serializers 배운지 하도 오래되서 시작을 못함 ㅠㅠ
 
-___
+------
 
 ## DAY2
 
-* 한 일
+- 한 일
 
-  * 어제 구상한 모델 직접 코드 작성하고 손 보기
-  * HTML 어떻게 만들지 한번 그려보기
-  * URLS 주소 이름 부여하기
-  * accounts에 구분키를 넣어서 0인 경우 customer, 1인 경우 vendor로 작성함
+  - 어제 구상한 모델 직접 코드 작성하고 손 보기
+  - HTML 어떻게 만들지 한번 그려보기
+  - URLS 주소 이름 부여하기
+  - accounts에 구분키를 넣어서 0인 경우 customer, 1인 경우 vendor로 작성함
 
-* 배운점
+- 배운점
 
-  * 계속 not null contraints failed가 뜨길래 뭐지,, 했는데 default = False를 넣어줘야 문제가 생기지 않음!
+  - 계속 not null contraints failed가 뜨길래 뭐지,, 했는데 default = False를 넣어줘야 문제가 생기지 않음!
 
     => 아무것도 없는 상태로 들어가면 빈 값이 되므로 테이블이 작성되기 어려움
 
@@ -162,13 +158,34 @@ class User(AbstractUser):
     division = models.BooleanField(default = False)
 ```
 
-
-
-![image-20220517175345984](README.assets/image-20220517175345984.png)
-
-![image-20220517175352519](README.assets/image-20220517175352519.png)
-
 ___
 
 ## DAY3
+
+* 한 일
+
+  * 지하 - urls, views.py 만들기
+  * 지은 - product_CRUD.html/ sale_CRUD.html
+  * 다같이 - forms.py 작성하기
+
+* 모르겠는 점
+
+  * image 파일을 삽입하고 싶은데 절대주소, 상대주소 입력하는 방법을 모르겠다..
+  * 계속 버튼이 3개가 나와,, 그것도 다시 봐야지
+
+* 알아낸점
+
+  * image 파일첨부를 할 수 있는 방법
+
+    [image 파일 첨부 방법](https://ghqls0210.tistory.com/33)
+
+  * forms.py에 선택할 수 있는 항목(category) 집어넣기
+
+* 내일 해야될일
+
+  * urls.py에 `<int:sale>` 고치기
+  * sale에도 image 삽입 추가
+  * forms.py의 category 항목 변경
+  * forms.py에서 SaleForm에서 'like'제거
+  * leftwrap.html 만들고 html 전부 돌려서 계속 수정!
 

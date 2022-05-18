@@ -1,4 +1,82 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
+<h1>{{ user.name}}님 상점의 마감임박 상품 관리</h1>
+<br>
+<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+  <a href = "{% url 'products:sale_create' %}" class="btn btn-primary me-md-2" type="button">추가</button>
+</div>
+<hr>
+
+{% for sale in sales %}
+<!--count가 1개 이상일때만 표시-->
+{% if sale.count >= 1 %}
+<div class="card mb-3" style="max-width: 540px;">
+  <div class="row g-0">
+    <div class="col-md-4">
+      {% if sale.image %}
+        <img class="img-fluid rounded-start" src="{{sale.image.url}}">
+        <br><br>
+      {% else %}
+      <!--상품 준비중 이미지 가져오기-->
+      <!--이미지 상대주소 확인-->
+        <img src = "/assets/loading.jpg" class="img-fluid rounded-start">
+        <br><br>
+      {% endif %}
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <a href = "{% url 'products:sale_detail' sale.pk %}">제품명: {{sale.name}}</p>
+        <p class="card-text">제품가격: {{sale.price}}</p>
+        <p class="card-text">제품재고: {{sale.count}}</p>
+        <!--좋아요-->
+        <form action="{% url 'products:sale_like' sale.pk %}" method="POST" class="d-inline">
+          {% csrf_token %}
+          {% if user in sale.like.all %}
+            <button class="likeB-{{ review.pk }}">좋아요 취소</button>
+          {% else %}
+            <button class="likeB-{{ review.pk }}">좋아요</button>
+          {% endif %}
+        </form>
+        <!--좋아요 끝-->
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endfor %}
 {% endblock content %}
+
+{% block script %}
+    <script>
+      const like = document.querySelectorAll('.d-inline')
+      const likeB = document.querySelectorAll('form button')
+      console.log(like)
+      console.log(likeB)
+      like.forEach(function(form) {
+        form.addEventListener('submit', function(event) {
+          event.preventDefault()
+          const pk = Number((event.target.getAttribute('action').split('/'))[2])
+          const B = document.querySelector(`.likeB-${pk}`)
+          axios.defaults.xsrfCookieName = 'csrftoken'
+          axios.defaults.xsrfHeaderName = 'X-CSRFTOKEN'
+          axios.post(`/sales/${pk}/like/`)
+            .then(function(response) {
+              console.log(response)
+              const likeCount = document.querySelector(`.LikeUser-${pk}`)
+              console.log(likeCount)
+              likeCount.innerText = response.data.count + ' 명이 이 글을 좋아합니다.'
+              if (response.data.like) {
+                B.innerText = '좋아요 취소'
+                console.log('좋아요!')
+              }
+              else {
+                B.innerText = '좋아요'
+                console.log('좋아요 취소!')
+              }
+            })
+        })
+      })
+    </script>
+{% endblock %}

@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -12,16 +13,13 @@
   <nav class="navbar bg-light sticky-top">
     <div class="container-fluid">
       <a class="navbar-brand" href="{% url 'products:home' %}">
-        <img src="/assets/logo.png" alt="our_logo" width="30" height="24" class="d-inline-block align-text-top">
+        <img src="{% static 'logo.png' %}" alt="our_logo" width="30" height="24" class="d-inline-block align-text-top">
       </a>
       <div class="navbar-nav">
         <a class="nav-link active" aria-current="page" href="{% url 'products:home' %}">HOME</a>
         <a class="nav-link" href="{% url 'products:ours' %}">OURS</a>
-        <a class="nav-link" href="{% url 'products:help' %}">HELP</a>
-        <a class="nav-link" href="{% url 'products:leftwrap_index' %}">LEFTWRAP</a>
-        <!--만약 상점주인이라면 product index를 볼 수 있게-->
-        {% if user.auth == 1 %}
-        <a class="nav-link" href="{% url 'products:product_index' %}">OWNER</a>
+        {% comment %} <a class="nav-link" href="{% url 'products:help' %}">HELP</a> {% endcomment %}
+        <a class="nav-link" href="{% url 'products:leftwrap' %}">LEFTWRAP</a>
       </div>
       <!--끝에 쪽으로 몰아넣고 싶어-->
       <div class="justify-content-end">
@@ -39,6 +37,14 @@
         <a href="{% url 'accounts:signup' %}">Signup</a>
         {% endif %}
       </div>
+    </div>
+  </nav>
+  <!--만약 상점 주인이라면? 이라는 nav bar-->
+  <nav class="navbar sticky-bottom bg-light">
+    <div class="container-fluid">
+      <p>만약 상점 주인이시라면?</p>
+      <a class="navbar-brand" href="{% url 'products:product_index' %}">상점상품관리</a>
+      <a class="navbar-brand" href="{% url 'products:sale_index' %}">마감임박상품관리</a>
     </div>
   </nav>
 
