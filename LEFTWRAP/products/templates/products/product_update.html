@@ -3,14 +3,14 @@
 {% block content %}
 <h1>'{{product.name}}' 제품 정보 수정하기</h1>
 <hr>
-<form action="{% url 'products:product_edit' product.pk %}" method="POST">
+<form action="{% url 'products:product_update' product.pk %}" method="POST">
   {% csrf_token %}
   {% for field in form %}
     {{ field.label_tag }}<br>
     {{ field }}<br>
   {% endfor %}
   <input class = 'btn btn-primary' type="submit" value="업데이트">
-  <a class = 'btn btn-primary' href = "{% url 'products:product_edit' product.pk%}">수정 초기화</a>
+  <a class = 'btn btn-primary' href = "{% url 'products:product_update' product.pk%}">수정 초기화</a>
 </form>
 <hr>
 

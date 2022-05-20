@@ -1,10 +1,12 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-  <h1>{{ user.name}}님 상점의 상품 관리</h1>
+  <h1>{{ user }}님 상점의 상품 관리</h1>
   <br>
-  <a href= "{% url 'products:product_create' %}" class = "btn btn-primary" type= "button">추가</button>
-
+  <div class = 'd-grid gap-2 d-md-flex justify-content-md-end'>
+  <a href= "{% url 'products:product_create' %}" class = "btn btn-primary" type= "button">추가</a>
+  </div>
   <hr>
 
 {% for product in products %}
@@ -15,15 +17,14 @@
           <img class="img-fluid rounded-start" src="{{product.image.url}}">
           <br><br>
         {% else %}
-        <!--상품 준비중 이미지 가져오기-->
-        <!--이미지 상대주소 확인-->
-          <img src = "/assets/loading.jpg" class="img-fluid rounded-start" alt = "상품이미지준비중">
+      
+          <img src = "{% static 'loading.jpg' %}" class="img-fluid rounded-start" alt = "상품이미지준비중">
           <br><br>
         {% endif %}
       </div>
       <div class="col-md-8">
         <div class="card-body">
-          <a href = "{% url 'products:product_detail' product.pk %}">제품명: {{product.name}}</p>
+          <a href = "{% url 'products:product_detail' product.pk %}">제품명: {{product.name}}</a>
           <p class="card-text">제품가격: {{product.price}}</p>
         </div>
       </div>

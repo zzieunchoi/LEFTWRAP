@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
-
+{% load static%}
 {% block content %}
-<!--이미지 상대주소 넣는법 알아보기-->
-<img src="/assets/ours.png" class="img-fluid" alt="...">
+<img src="{% static 'ours.png'%}" class="img-fluid" alt="...">
 {% endblock content %}

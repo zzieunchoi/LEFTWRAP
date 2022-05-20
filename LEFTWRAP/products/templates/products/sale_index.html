@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
 
-<h1>{{ user.name}}님 상점의 마감임박 상품 관리</h1>
+<h1>{{ user }}님 상점의 마감임박 상품 관리</h1>
 <br>
-<div class="d-grid gap-2 d-md-flex justify-content-md-end">
-  <a href = "{% url 'products:sale_create' %}" class="btn btn-primary me-md-2" type="button">추가</button>
-</div>
+<div class = 'd-grid gap-2 d-md-flex justify-content-md-end'>
+  <a href= "{% url 'products:sale_create' %}" class = "btn btn-primary" type= "button">추가</a>
+  </div>
 <hr>
 
 {% for sale in sales %}
@@ -19,26 +19,29 @@
         <img class="img-fluid rounded-start" src="{{sale.image.url}}">
         <br><br>
       {% else %}
-      <!--상품 준비중 이미지 가져오기-->
-      <!--이미지 상대주소 확인-->
-        <img src = "/assets/loading.jpg" class="img-fluid rounded-start">
+        <img src = "{% static 'loading.jpg' %}" class="img-fluid rounded-start" alt = "상품이미지준비중">
         <br><br>
       {% endif %}
     </div>
     <div class="col-md-8">
       <div class="card-body">
-        <a href = "{% url 'products:sale_detail' sale.pk %}">제품명: {{sale.name}}</p>
+        <a href = "{% url 'products:sale_detail' sale.pk %}">제품명: {{sale.name}}</a>
         <p class="card-text">제품가격: {{sale.price}}</p>
         <p class="card-text">제품재고: {{sale.count}}</p>
         <!--좋아요-->
-        <form action="{% url 'products:sale_like' sale.pk %}" method="POST" class="d-inline">
-          {% csrf_token %}
-          {% if user in sale.like.all %}
-            <button class="likeB-{{ review.pk }}">좋아요 취소</button>
-          {% else %}
-            <button class="likeB-{{ review.pk }}">좋아요</button>
-          {% endif %}
-        </form>
+
+        {% if user in sale.like.all %}
+      <i class = "fas fa-thumbs-down like-button" data-id = "{{sale.pk}}" style = "color: tomato"></i>
+      {% else %}
+      <i class = "fas fa-thumbs-up like-button" data-id = "{{ sale.pk}}" style = "color:black"></i>
+      {% endif %}
+
+      <p>
+        <span id="like-count-{{ sale.pk }}">
+          {{ sale.like.count }}
+        </span>
+        명이 이 제품을 좋아합니다.
+      </p>
         <!--좋아요 끝-->
       </div>
     </div>
@@ -49,34 +52,30 @@
 {% endblock content %}
 
 {% block script %}
-    <script>
-      const like = document.querySelectorAll('.d-inline')
-      const likeB = document.querySelectorAll('form button')
-      console.log(like)
-      console.log(likeB)
-      like.forEach(function(form) {
-        form.addEventListener('submit', function(event) {
-          event.preventDefault()
-          const pk = Number((event.target.getAttribute('action').split('/'))[2])
-          const B = document.querySelector(`.likeB-${pk}`)
-          axios.defaults.xsrfCookieName = 'csrftoken'
-          axios.defaults.xsrfHeaderName = 'X-CSRFTOKEN'
-          axios.post(`/sales/${pk}/like/`)
-            .then(function(response) {
-              console.log(response)
-              const likeCount = document.querySelector(`.LikeUser-${pk}`)
-              console.log(likeCount)
-              likeCount.innerText = response.data.count + ' 명이 이 글을 좋아합니다.'
-              if (response.data.like) {
-                B.innerText = '좋아요 취소'
-                console.log('좋아요!')
-              }
-              else {
-                B.innerText = '좋아요'
-                console.log('좋아요 취소!')
-              }
-            })
-        })
+<script>
+  // CODE HERE
+  const likeButtons = document.querySelectorAll('.like-button')
+  likeButtons.forEach(function (button) {
+    button.addEventListener('click', function(event) {
+      const saleId = Number(event.target.dataset.id)
+      console.log(saleId)
+      axios.defaults.xsrfCookieName = 'csrftoken'
+      axios.defaults.xsrfHeaderName = 'X-CSRFTOKEN'
+      axios.post(`/products/sales/${saleId}/like/`)
+      .then (function(response){
+        console.log(response)
+        const likeCount = document.querySelector(`#like-count-${saleId}`)
+        likeCount.innerText = response.data.count
+        
+        if (response.data.like) {
+          event.target.className = 'fas fa-thumbs-up like-button'
+          event.target.style.color = 'crimson'
+        } else {
+          event.target.className = 'fas fa-thumbs-down like-button'
+          event.target.style.color = 'black'
+        }
       })
-    </script>
-{% endblock %}
+    })
+  })
+</script>
+{% endblock script%}

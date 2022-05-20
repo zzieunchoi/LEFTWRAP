@@ -189,3 +189,115 @@ ___
   * forms.py에서 SaleForm에서 'like'제거
   * leftwrap.html 만들고 html 전부 돌려서 계속 수정!
 
+___
+
+## DAY4
+
+* 한 일
+
+  * accounts/login, profile, signup.html 작성
+  * leftwrap_edit, leftwrap_index.html 작성
+  * 나머지 html 모두 정리
+
+* 알아낸점
+
+  * 어제 이미지 파일 삽입하고 싶은데 상대주소때문에 못했던것 해결!
+
+    ```python
+    #settings.py에서 설정
+    STATIC_DIR = os.path.join(BASE_DIR,"static")
+    STATIC_URL = '/static/'
+    STATICFILES_DIRS = [
+        os.path.join(BASE_DIR,'products','static')
+    ]
+    ```
+
+    
+
+    ```html
+    {% extends 'base.html' %}
+    <!--여기에 static 로드하고-->
+    <!--products 폴더 내에 static 넣기!-->
+    {% load static %}
+    {% block content %}
+    ```
+
+  * 버튼 3개 나오는 거 해결!
+
+    ```html
+    <a href = "{% url 'accounts:login'%}"></button>
+    => <a href = "{% url 'accounts:login'%}"></a>
+    <!--태그 잘 닫기!-->
+    ```
+
+  * 좋아요 누르기 - js
+
+    ```html
+    <!--좋아요-->
+    
+            {% if user in sale.like.all %}
+          <i class = "fas fa-thumbs-down like-button" data-id = "{{sale.pk}}" style = "color: tomato"></i>
+          {% else %}
+          <i class = "fas fa-thumbs-up like-button" data-id = "{{ sale.pk}}" style = "color:black"></i>
+          {% endif %}
+    
+          <p>
+            <span id="like-count-{{ sale.pk }}">
+              {{ sale.like.count }}
+            </span>
+            명이 이 제품을 좋아합니다.
+          </p>
+            <!--좋아요 끝-->
+    
+    <script>
+    const likeButtons = document.querySelectorAll('.like-button')
+      likeButtons.forEach(function (button) {
+        button.addEventListener('click', function(event) {
+          const saleId = Number(event.target.dataset.id)
+          console.log(saleId)
+          axios.defaults.xsrfCookieName = 'csrftoken'
+          axios.defaults.xsrfHeaderName = 'X-CSRFTOKEN'
+          axios.post(`/products/sales/${saleId}/like/`)
+          .then (function(response){
+            console.log(response)
+            const likeCount = document.querySelector(`#like-count-${saleId}`)
+            likeCount.innerText = response.data.count
+            
+            if (response.data.like) {
+              event.target.className = 'fas fa-thumbs-up like-button'
+              event.target.style.color = 'crimson'
+            } else {
+              event.target.className = 'fas fa-thumbs-down like-button'
+              event.target.style.color = 'black'
+            }
+          })
+        })
+      })
+    </script>
+    ```
+
+  * {{user}}의 프로필 페이지 
+
+    ```html
+    <h3>{{ person.username}}님이 좋아하는 상품들</h3>
+          {% if person.sales_set.all.count %}
+          {% for sale in person.sales_set.all %}
+          <a href = "{% url 'products:sale_detail' sale.pk %}">{{ sale.name }}</a>
+          {% endfor %}
+          {% else %}
+          <p>아직 좋아하시는 상품이 없어요!</p>
+          <a href = "{% url 'products:leftwrap' %}">장보러가기</a>
+          {% endif %}
+    ```
+
+    
+
+* 내일 해야될일
+
+  * 영화 프로젝트 새로 생성ㅠㅠ
+
+
+
+05/28일부터~
+
+VUE 로 다시 만들어보기!!

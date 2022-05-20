@@ -1,11 +1,5 @@
 from django import forms
-from .models import Category, Product, Sales, Sales_Detail, Comment
-
-
-class CategoryForm(forms.ModelForm):
-    class Meta:
-        model = Category
-        fields = ['name',]
+from .models import Product, Sales, Sales_Detail, Comment
 
 
 class ProductForm(forms.ModelForm):
@@ -15,9 +9,39 @@ class ProductForm(forms.ModelForm):
 
 
 class SalesForm(forms.ModelForm):
+    CATE_A = '도넛'
+    CATE_B = '페스츄리/파이'
+    CATE_C = '조리빵'
+    CATE_D = '스낵'
+    CATE_E = '베이글'
+    CATE_F = '샐러드'
+    CATE_G = '케이크'
+    CATE_H = '기타'
+
+    CATEGORYS_CHOICES = [
+        (CATE_A,'도넛'),
+        (CATE_B, '페스츄리/파이'),
+        (CATE_C, '조리빵'),
+        (CATE_D, '스낵'),
+        (CATE_E, '베이글'),
+        (CATE_F, '샐러드'),
+        (CATE_G, '케이크'),
+        (CATE_H, '기타'),
+    ]
+
+    category = forms.ChoiceField(
+        label='Category',
+        choices=CATEGORYS_CHOICES,
+        widget=forms.Select(
+            attrs={
+                'class': 'my-category form-control',
+            }
+        )
+    )
+
     class Meta:
         model = Sales
-        fields = ['name','price','categorys','count','like']
+        fields = ['name','price','category','count',]
 
 
 class SalesDetailForm(forms.ModelForm):

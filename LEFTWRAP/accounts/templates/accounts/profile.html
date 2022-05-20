@@ -1,4 +1,54 @@
 {% extends 'base.html' %}
 
 {% block content %}
-{% endblock content %}
+  <h1>{{ person.username }}의 프로필 페이지</h1>
+  {% with followings=person.followings.all followers=person.followers.all %}
+    <div>
+      <h3>{{ person.username}}님이 좋아하는 상품들</h3>
+      {% if person.sales_set.all.count %}
+      {% for sale in person.sales_set.all %}
+      <a href = "{% url 'products:sale_detail' sale.pk %}">{{ sale.name }}</a>
+      {% endfor %}
+      {% else %}
+      <p>아직 좋아하시는 상품이 없어요!</p>
+      <a href = "{% url 'products:leftwrap' %}">장보러가기</a>
+      {% endif %}
+  {% endwith %}
+{% endblock %}
+
+{% block script %}
+<script>
+
+
+  const followUser = document.querySelector('.follower-form')
+  followUser.addEventListener('submit', function(event) {
+    event.preventDefault()
+
+    let personId = event.target.getAttribute('data-person-id')
+
+    axios.defaults.xsrfCookieName = 'csrftoken'
+    axios.defaults.xsrfHeaderName = 'X-CSRFTOKEN'
+
+    axios.post(`/accounts/${personId}/follow/`)
+    .then (res => {
+      
+      const followButton = document.querySelector('#followBtn')
+      const followData = document.querySelector('.followdata')
+      let isFollower = res.data.follow
+      let followers_count = res.data.followers_count
+      let following_count = res.data.followings_count
+      
+      console.log(followButton)
+      if (isFollower === true) {
+        followButton.innerText='언팔로우'
+      } else {
+        followButton.innerText ='팔로우'
+      }
+      
+      followData.innerText = `팔로잉수: ${following_count}/ 팔로워수: ${followers_count}`
+
+    })
+  })
+
+</script>
+{% endblock script %}

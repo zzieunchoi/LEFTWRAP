@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404, render, redirect, get_list_or_404
 from django.views.decorators.http import require_safe, require_GET, require_POST, require_http_methods
-from .models import Product, Sales, Sales_Detail, Category, Comment
-from .forms import ProductForm, SalesForm, SalesDetailForm, CategoryForm, CommentForm
+from .models import Product, Sales, Sales_Detail, Comment
+from .forms import ProductForm, SalesForm, SalesDetailForm, CommentForm
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 # Create your views here.
@@ -14,6 +14,11 @@ def home(request):
 @require_safe
 def ours(request):
     return render(request, 'products/ours.html')
+
+
+@require_safe
+def help(request):
+    return render(request, 'products/help.html')
 
 
 @require_GET
@@ -43,8 +48,8 @@ def product_create(request):
 
 
 @require_safe
-def product_detail(request, pk):
-    product = get_object_or_404(Product, pk=pk)
+def product_detail(request, product_pk):
+    product = get_object_or_404(Product, pk=product_pk)
     context = {
         'product': product,
     }
@@ -52,8 +57,8 @@ def product_detail(request, pk):
 
 
 @require_safe
-def product_edit(request, pk):
-    product = get_object_or_404(Product, pk=pk)
+def product_edit(request, product_pk):
+    product = get_object_or_404(Product, pk=product_pk)
     context = {
         'product': product,
     }
@@ -61,17 +66,17 @@ def product_edit(request, pk):
 
 
 @require_POST
-def product_delete(request, pk):
+def product_delete(request, product_pk):
     if request.user.is_authenticated:
-        product = get_object_or_404(Product, pk=pk)
+        product = get_object_or_404(Product, pk=product_pk)
         product.delete()
     return redirect('products:product_index')
 
 
 @login_required
 @require_http_methods(["GET", "POST"])
-def product_update(request, pk):
-    product = get_object_or_404(Product, pk=pk)
+def product_update(request, product_pk):
+    product = get_object_or_404(Product, pk=product_pk)
     if request.method == 'POST':
         form = ProductForm(request.POST, instance=product)
         if form.is_valid():
@@ -81,9 +86,9 @@ def product_update(request, pk):
         form = ProductForm(instance=product)
     context = {
         'form': form,
-        'movie': product,
+        'product': product,
     }
-    return render(request, 'products:product_update.html', context)
+    return render(request, 'products/product_update.html', context)
 
 
 @require_GET
@@ -113,8 +118,8 @@ def sale_create(request):
 
 
 @require_safe
-def sale_detail(request, pk):
-    sale = get_object_or_404(Sales, pk=pk)
+def sale_detail(request, sale_pk):
+    sale = get_object_or_404(Sales, pk=sale_pk)
     context = {
         'sale': sale,
     }
@@ -122,8 +127,8 @@ def sale_detail(request, pk):
 
 
 @require_safe
-def sale_edit(request, pk):
-    sale = get_object_or_404(Sales, pk=pk)
+def sale_edit(request, sale_pk):
+    sale = get_object_or_404(Sales, pk=sale_pk)
     context = {
         'sale': sale,
     }
@@ -131,17 +136,17 @@ def sale_edit(request, pk):
 
 
 @require_POST
-def sale_delete(request, pk):
+def sale_delete(request, sale_pk):
     if request.user.is_authenticated:
-        sale = get_object_or_404(Sales, pk=pk)
+        sale = get_object_or_404(Sales, pk=sale_pk)
         sale.delete()
     return redirect('products:sale_index')
 
 
 @login_required
 @require_http_methods(["GET", "POST"])
-def sale_update(request, pk):
-    sale = get_object_or_404(Sales, pk=pk)
+def sale_update(request, sale_pk):
+    sale = get_object_or_404(Sales, pk=sale_pk)
     if request.method == 'POST':
         form = SalesForm(request.POST, instance=sale)
         if form.is_valid():
@@ -151,9 +156,9 @@ def sale_update(request, pk):
         form = ProductForm(instance=sale)
     context = {
         'form': form,
-        'movie': sale,
+        'sale': sale,
     }
-    return render(request, 'products:sale_update.html', context)
+    return render(request, 'products/sale_update.html', context)
 
 
 @require_POST
@@ -199,7 +204,7 @@ def comments_delete(request, sale_pk ,comment_pk):
 
 @require_GET
 def leftwrap(request):
-    sales = Sales.objects.all()
+    sales = Sales.objects.filter(leftwrap=True)
     context = {
         'sales': sales,
     }
@@ -208,7 +213,7 @@ def leftwrap(request):
 
 @require_safe
 def leftwrap_edit(request):
-    sales = Sales.objects.all()
+    sales = Sales.objects.filter(user=request.user)
     context = {
         'sales': sales,
     }

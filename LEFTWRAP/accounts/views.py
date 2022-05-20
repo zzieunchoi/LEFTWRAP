@@ -7,6 +7,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST, require_http_methods
 from .forms import CustomUserCreationForm
+from ..products.models import Sales
 
 
 @require_http_methods(['GET', 'POST'])
@@ -55,8 +56,10 @@ def logout(request):
 @login_required
 def profile(request, username):
     person = get_object_or_404(get_user_model(), username=username)
+    like = Sales.objects.filter(username = username)
     context = {
         'person': person,
+        'like':like,
     }
     return render(request, 'accounts/profile.html', context)
 

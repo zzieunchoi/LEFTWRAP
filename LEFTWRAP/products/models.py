@@ -2,11 +2,6 @@ from django.db import models
 from django.conf import settings
 
 # Create your models here.
-class Category(models.Model):
-    name = models.CharField(max_length=20)
-
-    def __str__(self):
-        return self.name
 
 
 class Product(models.Model):
@@ -22,11 +17,13 @@ class Product(models.Model):
 class Sales(models.Model):
     name = models.CharField(max_length=50)
     price = models.IntegerField()
-    categorys = models.ManyToManyField(Category)
+    category = models.CharField(max_length=30)
     count = models.IntegerField()
     description = models.TextField()
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     like = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_products')
+    image = models.ImageField(upload_to = 'images/', null=True, blank=True)
+    leftwrap = models.BooleanField(null=False, blank=False, default=False)
 
     def __str__(self):
         return self.name

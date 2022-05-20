@@ -1,12 +1,18 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
 
 <div class = 'd-flex justify-content-center'>
   <div class="card" style="width: 18rem;">
     <h1 class = 'd-flex justify-content-center'>{{sale.name}}의 상세정보</h1>
     <!--이미지 가져오는 방법 알아보기-->
-    <img src="{{ sale.image.url }}" class="card-img-top img-fluid" alt="sale_image">
+    {% if sale.image %}
+      <img class="img-fluid rounded-start" src="{{sale.image.url}}">
+      <br><br>
+    {% else %}
+      <img src = "{% static 'loading.jpg' %}" class="img-fluid rounded-start" alt = "상품이미지준비중">
+      <br><br>
+    {% endif %}
     <div class="card-body">
       <p class="card-text">제품명 : {{ sale.name }}</p>
       <p class="card-text">제품가격 : {{ sale.price }}</p>
@@ -15,7 +21,7 @@
       <p class="card-text">제품설명 : {{ sale.description }}</p>
   
       <div class="d-flex">
-        <a href="{% url 'products:sale_edit' sale.pk %}" class="btn btn-info me-1">정보 수정</a>
+        <a href="{% url 'products:sale_update' sale.pk %}" class="btn btn-info me-1">정보 수정</a>
         <form action="{% url 'products:sale_delete' sale.pk %}" method="POST">
           {% csrf_token %}
           <input type="submit" value="제품삭제" class="btn btn-danger">
